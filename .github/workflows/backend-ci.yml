@@ -17,24 +17,26 @@ jobs:
         with:
           node-version: 20
 
+      # List root contents for debug
+      - name: Show repository root
+        run: ls -la
+
       - name: Install dependencies (guarded)
         run: |
-          if [ -d "./Backend" ]; then
-            cd ./Backend
-            npm ci
+          if [ -d "./Backend" ] || [ -d "./backend" ]; then
+            cd $(ls -d ./Backend ./backend 2>/dev/null | head -n 1)
+            npm ci || npm install
           else
-            echo "ERROR: Backend directory not found at ./Backend"
-            echo "Repository root contents:"
-            ls -la
+            echo "ERROR: Backend directory not found at ./Backend or ./backend"
             exit 1
           fi
 
       - name: Run tests (guarded)
         run: |
-          if [ -d "./Backend" ]; then
-            cd ./Backend
+          if [ -d "./Backend" ] || [ -d "./backend" ]; then
+            cd $(ls -d ./Backend ./backend 2>/dev/null | head -n 1)
             npm test
           else
-            echo "ERROR: Backend directory not found at ./Backend"
+            echo "ERROR: Backend directory not found at ./Backend or ./backend"
             exit 1
           fi
