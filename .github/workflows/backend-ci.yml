@@ -11,13 +11,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install dependencies
-        working-directory: ./backend
-        run: npm ci
-      - name: Run tests
-        working-directory: ./backend
-        run: npm test
+
+      - name: Install dependencies (guarded)
+        run: |
+          if [ -d "./Backend" ]; then
+            cd ./Backend
+            npm ci
+          else
+            echo "ERROR: Backend directory not found at ./Backend"
+            echo "Repository root contents:"
+            ls -la
+            exit 1
+          fi
+
+      - name: Run tests (guarded)
+        run: |
+          if [ -d "./Backend" ]; then
+            cd ./Backend
+            npm test
+          else
+            echo "ERROR: Backend directory not found at ./Backend"
+            exit 1
+          fi
