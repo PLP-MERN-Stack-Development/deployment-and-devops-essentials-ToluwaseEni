@@ -1,0 +1,3 @@
+# Force LF for package-lock and package.json
+client/package-lock.json text eol=lf
+client/package.json text eol=lf
