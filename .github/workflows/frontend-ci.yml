@@ -9,15 +9,29 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      # 1. Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22  # match your local Node version
+
+      # 3. Install dependencies in client folder
       - name: Install dependencies
         working-directory: ./client
         run: npm ci
-      - name: Build project
+
+      # 4. Run tests in client folder
+      - name: Run tests
+        working-directory: ./client
+        run: npm test
+
+      # 5. Build frontend (optional if you deploy separately)
+      - name: Build frontend
         working-directory: ./client
         run: npm run build
